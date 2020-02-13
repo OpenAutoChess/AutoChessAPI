@@ -1,9 +1,10 @@
 package server
 
 import (
-    "io"
     "github.com/gorilla/mux"
     "net/http"
+    // "github.com/googollee/go-socket.io"
+    "encoding/json"
 )
 
 type Server struct{
@@ -29,8 +30,21 @@ func (s *Server) configureRouter() {
 }
 
 func (s *Server) handleHello() http.HandlerFunc {
-
+    type Move struct {
+        Name string
+    }
     return func(w http.ResponseWriter, r *http.Request) {
-        io.WriteString(w, "Hello")
+
+        resp := Move{"Nurik"}
+
+        js, err := json.Marshal(resp)
+        if err != nil {
+            http.Error(w, err.Error(), http.StatusInternalServerError)
+            return
+        }
+
+        w.Header().Set("Content-Type", "application/json")
+        w.Write(js)
+
     }
 }
